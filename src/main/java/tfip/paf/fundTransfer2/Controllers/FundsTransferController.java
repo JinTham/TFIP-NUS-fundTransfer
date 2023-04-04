@@ -47,12 +47,22 @@ public class FundsTransferController {
         }
         List<String> errorList = new LinkedList<>();
         if (!accountSvc.accountExists(transfer.getFromAccountId())) {
-            errorList.add("Account %s does not exits".formatted(transfer.getFromAccountId()));
+            errorList.add("Account %s does not exists!".formatted(transfer.getFromAccountId()));
 		}
         if (!accountSvc.accountExists(transfer.getToAccountId())) {
-			errorList.add("Account %s does not exits".formatted(transfer.getToAccountId()));
+			errorList.add("Account %s does not exists!".formatted(transfer.getToAccountId()));
 		}
-
+        if (transfer.getToAccountId().equalsIgnoreCase(transfer.getFromAccountId())) {
+			errorList.add("Cannot transfer between the same account!");
+		}
+        if (errorList.size()>0){
+            Optional<List<Account>> opt = accountSvc.getAllAccounts();
+            model.addAttribute("accounts", opt.get());
+            Transfer lastTransfer = (Transfer)session.getAttribute("transfer");
+            model.addAttribute("transfer", lastTransfer);
+            model.addAttribute("errorList", errorList);
+            return "view0";
+        }
         try {
             String txId = accountSvc.performTransfer(transfer);
             model.addAttribute("transfer",transfer);
