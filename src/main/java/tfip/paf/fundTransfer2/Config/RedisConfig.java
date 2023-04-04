@@ -21,13 +21,6 @@ public class RedisConfig {
     @Value("${spring.redis.database}")
     private int redisDatabse;
 
-    public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName(redisHost);
-        redisConfig.setPort(redisPort);
-        return new JedisConnectionFactory(redisConfig);
-    }
-
     @Bean("my-redis")
     public RedisTemplate<String, String> createRedisTemplate() {
 
